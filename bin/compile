@@ -63,12 +63,13 @@ if true; then
         ## Get platform of installed distribution
         PLATFORM=$($TLMGR_PATH -print-platform)
         ## Build binaries path
-        BINARIES_PATH="$TEXLIVE_INSTALL_PREFIX/bin/$PLATFORM"
+        BINARIES_PATH="bin/$PLATFORM"
         ## Append binaries path to system paths
         mkdir -p $BUILD_DIR/.profile.d
-        echo "export PATH=$BINARIES_PATH:\$PATH" > $BUILD_DIR/.profile.d/texlive.sh
+        echo "export PATH=\$HOME/texlive/$BINARIES_PATH:\$PATH" > $BUILD_DIR/.profile.d/texlive.sh
+        echo "export PATH=$TEXLIVE_INSTALL_PREFIX/$BINARIES_PATH:\$PATH" > $TEMP_DIR/texlive.sh
     } | log-indent
-    source $BUILD_DIR/.profile.d/texlive.sh
+    source $TEMP_DIR/texlive.sh
 fi
 
 if [ ! $CACHE_HIT ]; then
