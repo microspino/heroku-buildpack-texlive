@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Usage: compile BUILD_DIR CACHE_DIR ENV_DIR
 
+function log-step   (){ echo "-----> $@"; }
+function log-info   (){ echo "       $@"; }
+function log-indent (){ sed -u 's/^/       /'; }
+
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
@@ -17,13 +21,13 @@ mkdir -p $CACHE_DIR
 
 # CACHE HIT POSITIVE
 if [ -d "$CACHE_DIR/texlive" ]; then
-    # Restore cache
+    log-step "Restore cache"
     cp -r "$CACHE_DIR/texlive" "$BUILD_DIR/texlive"
 fi
 
 # CACHE HIT NEGATIVE
 if [ ! -d "$CACHE_DIR/texlive" ]; then
-    # Install TeX Live distribution
+    log-step "Install TeX Live distribution"
     ## Check into temporary folder
     cd $TEMP_DIR
     ## Download installer
@@ -38,7 +42,7 @@ fi
 
 # ALWAYS
 if true; then
-    # Update system paths
+    log-step "Update system paths"
     ## Get tlmgr path
     TLMGR_PATH=$(ls "$TEXLIVE_INSTALL_PREFIX"/bin/*/tlmgr)
     ## Get platform of installed distribution
@@ -55,7 +59,7 @@ fi
 
 # CACHE HIT NEGATIVE
 if [ ! -d "$CACHE_DIR/texlive" ]; then
-    # Install TeX Live packages
+    log-step "Install TeX Live packages"
     ## Read nonempty lines from packages file into an array
     while IFS=\= read pkg; do TEXLIVE_PACKAGES+=($pkg); done < <(grep --invert-match '^(\s*#.*)?$' "$TEXLIVE_PACKAGES_PATH")
     ## Use tlmgr to install the packages
@@ -64,7 +68,7 @@ fi
 
 # CACHE HIT POSITIVE
 if [ -d "$CACHE_DIR/texlive" ]; then
-    # Update TeX Live distribution (Linux and macOS)
+    log-step "Update TeX Live distribution"
     ## Update tlmgr
     tlmgr update --self
     ## Update everything else
@@ -73,7 +77,7 @@ fi
 
 # ALWAYS
 if true; then
-    # Store cache
+    log-step "Store cache"
     rm -rf "$CACHE_DIR/texlive"
     cp -r "$BUILD_DIR/texlive" "$CACHE_DIR/texlive"
 fi
