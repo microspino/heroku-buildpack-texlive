@@ -22,62 +22,74 @@ mkdir -p $CACHE_DIR
 # CACHE HIT POSITIVE
 if [ -d "$CACHE_DIR/texlive" ]; then
     log-step "Restore cache"
-    cp -r "$CACHE_DIR/texlive" "$BUILD_DIR/texlive"
+    {
+        cp -r "$CACHE_DIR/texlive" "$BUILD_DIR/texlive"
+    } | log-indent
 fi
 
 # CACHE HIT NEGATIVE
 if [ ! -d "$CACHE_DIR/texlive" ]; then
     log-step "Install TeX Live distribution"
-    ## Check into temporary folder
-    cd $TEMP_DIR
-    ## Download installer
-    wget --quiet http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
-    ## Unpack installer
-    tar -xzf install-tl-unx.tar.gz
-    ## Check into unpacked installer folder
-    cd install-tl-20*
-    ## Run installer with given profile
-    ./install-tl --portable --profile="$TEXLIVE_PROFILE_PATH"
+    {
+        ## Check into temporary folder
+        cd $TEMP_DIR
+        ## Download installer
+        wget --quiet http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+        ## Unpack installer
+        tar -xzf install-tl-unx.tar.gz
+        ## Check into unpacked installer folder
+        cd install-tl-20*
+        ## Run installer with given profile
+        ./install-tl --portable --profile="$TEXLIVE_PROFILE_PATH"
+    } | log-indent
 fi
 
 # ALWAYS
 if true; then
     log-step "Update system paths"
-    ## Get tlmgr path
-    TLMGR_PATH=$(ls "$TEXLIVE_INSTALL_PREFIX"/bin/*/tlmgr)
-    ## Get platform of installed distribution
-    PLATFORM=$($TLMGR_PATH -print-platform)
-    ## Build binaries path
-    BINARIES_PATH="$TEXLIVE_INSTALL_PREFIX/bin/$PLATFORM"
-    ## Append binaries path to system paths
-    ### For current dyno
-    PATH=$BINARIES_PATH:$PATH
-    ### For future dynos
-    mkdir -p $BUILD_DIR/.profile.d
-    echo "export PATH=$BINARIES_PATH:\$PATH" > $BUILD_DIR/.profile.d/texlive.sh
+    {
+        ## Get tlmgr path
+        TLMGR_PATH=$(ls "$TEXLIVE_INSTALL_PREFIX"/bin/*/tlmgr)
+        ## Get platform of installed distribution
+        PLATFORM=$($TLMGR_PATH -print-platform)
+        ## Build binaries path
+        BINARIES_PATH="$TEXLIVE_INSTALL_PREFIX/bin/$PLATFORM"
+        ## Append binaries path to system paths
+        ### For current dyno
+        PATH=$BINARIES_PATH:$PATH
+        ### For future dynos
+        mkdir -p $BUILD_DIR/.profile.d
+        echo "export PATH=$BINARIES_PATH:\$PATH" > $BUILD_DIR/.profile.d/texlive.sh
+    } | log-indent
 fi
 
 # CACHE HIT NEGATIVE
 if [ ! -d "$CACHE_DIR/texlive" ]; then
     log-step "Install TeX Live packages"
-    ## Read nonempty lines from packages file into an array
-    while IFS=\= read pkg; do TEXLIVE_PACKAGES+=($pkg); done < <(grep --invert-match '^(\s*#.*)?$' "$TEXLIVE_PACKAGES_PATH")
-    ## Use tlmgr to install the packages
-    tlmgr install "${TEXLIVE_PACKAGES[@]}"
+    {
+        ## Read nonempty lines from packages file into an array
+        while IFS=\= read pkg; do TEXLIVE_PACKAGES+=($pkg); done < <(grep --invert-match '^(\s*#.*)?$' "$TEXLIVE_PACKAGES_PATH")
+        ## Use tlmgr to install the packages
+        tlmgr install "${TEXLIVE_PACKAGES[@]}"
+    } | log-indent
 fi
 
 # CACHE HIT POSITIVE
 if [ -d "$CACHE_DIR/texlive" ]; then
     log-step "Update TeX Live distribution"
-    ## Update tlmgr
-    tlmgr update --self
-    ## Update everything else
-    tlmgr update --all
+    {
+        ## Update tlmgr
+        tlmgr update --self
+        ## Update everything else
+        tlmgr update --all
+    } | log-indent
 fi
 
 # ALWAYS
 if true; then
     log-step "Store cache"
-    rm -rf "$CACHE_DIR/texlive"
-    cp -r "$BUILD_DIR/texlive" "$CACHE_DIR/texlive"
+    {
+        rm -rf "$CACHE_DIR/texlive"
+        cp -r "$BUILD_DIR/texlive" "$CACHE_DIR/texlive"
+    } | log-indent
 fi
