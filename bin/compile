@@ -14,8 +14,13 @@ BIN_DIR=$(dirname $(realpath -s $0))
 TEMP_DIR=$(mktemp -d)
 
 export TEXLIVE_INSTALL_PREFIX=$BUILD_DIR/texlive
-TEXLIVE_PROFILE_PATH=$BIN_DIR/texlive.profile
-TEXLIVE_PACKAGES_PATH=$BIN_DIR/texlive.packages
+
+# If paths are given, they're solved relative to $BUILD_DIR
+TEXLIVE_PROFILE_PATH=${TEXLIVE_PROFILE_PATH:+$BUILD_DIR/$TEXLIVE_PROFILE_PATH}
+TEXLIVE_PACKAGES_PATH=${TEXLIVE_PACKAGES_PATH:+$BUILD_DIR/$TEXLIVE_PACKAGES_PATH}
+# If paths are not given, we fall back to the default files
+TEXLIVE_PROFILE_PATH=${TEXLIVE_PROFILE_PATH:-$BIN_DIR/texlive.profile}
+TEXLIVE_PACKAGES_PATH=${TEXLIVE_PACKAGES_PATH:-$BIN_DIR/texlive.packages}
 
 log-step "Restore cache"
 mkdir -p $CACHE_DIR
