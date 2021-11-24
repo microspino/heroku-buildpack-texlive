@@ -55,12 +55,10 @@ if true; then
         ## Build binaries path
         BINARIES_PATH="$TEXLIVE_INSTALL_PREFIX/bin/$PLATFORM"
         ## Append binaries path to system paths
-        ### For current dyno
-        PATH=$BINARIES_PATH:$PATH
-        ### For future dynos
         mkdir -p $BUILD_DIR/.profile.d
         echo "export PATH=$BINARIES_PATH:\$PATH" > $BUILD_DIR/.profile.d/texlive.sh
     } | log-indent
+    source $BUILD_DIR/.profile.d/texlive.sh
 fi
 
 # CACHE HIT NEGATIVE
