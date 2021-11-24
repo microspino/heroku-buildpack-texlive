@@ -20,7 +20,7 @@ TEXLIVE_PACKAGES_PATH=$BIN_DIR/texlive.packages
 log-step "Restore cache"
 mkdir -p $CACHE_DIR
 CACHE_KEY=texlive
-[[ -d "$CACHE_DIR/$CACHE_KEY"]] && CACHE_HIT=1
+[[ -d "$CACHE_DIR/$CACHE_KEY" ]] && CACHE_HIT=1
 if [ $CACHE_HIT ]; then
     {
         echo "Found hit: restoring cache."
