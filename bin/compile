@@ -17,18 +17,20 @@ export TEXLIVE_INSTALL_PREFIX=$BUILD_DIR/texlive
 TEXLIVE_PROFILE_PATH=$BIN_DIR/texlive.profile
 TEXLIVE_PACKAGES_PATH=$BIN_DIR/texlive.packages
 
+log-step "Restore cache"
 mkdir -p $CACHE_DIR
-
-# CACHE HIT POSITIVE
-if [ -d "$CACHE_DIR/texlive" ]; then
-    log-step "Restore cache"
+CACHE_KEY=texlive
+[[ -d "$CACHE_DIR/$CACHE_KEY"]] && CACHE_HIT=1
+if [ $CACHE_HIT ]; then
     {
-        cp -r "$CACHE_DIR/texlive" "$BUILD_DIR/texlive"
+        echo "Found hit: restoring cache."
+        cp -r "$CACHE_DIR/$CACHE_KEY" "$BUILD_DIR/texlive"
     } | log-indent
+else
+    log-info "No hit found."
 fi
 
-# CACHE HIT NEGATIVE
-if [ ! -d "$CACHE_DIR/texlive" ]; then
+if [ ! $CACHE_HIT ]; then
     log-step "Install TeX Live distribution"
     {
         ## Check into temporary folder
@@ -44,7 +46,6 @@ if [ ! -d "$CACHE_DIR/texlive" ]; then
     } | log-indent
 fi
 
-# ALWAYS
 if true; then
     log-step "Update system paths"
     {
@@ -61,8 +62,7 @@ if true; then
     source $BUILD_DIR/.profile.d/texlive.sh
 fi
 
-# CACHE HIT NEGATIVE
-if [ ! -d "$CACHE_DIR/texlive" ]; then
+if [ ! $CACHE_HIT ]; then
     log-step "Install TeX Live packages"
     {
         ## Read nonempty lines from packages file into an array
@@ -72,8 +72,7 @@ if [ ! -d "$CACHE_DIR/texlive" ]; then
     } | log-indent
 fi
 
-# CACHE HIT POSITIVE
-if [ -d "$CACHE_DIR/texlive" ]; then
+if [ $CACHE_HIT ]; then
     log-step "Update TeX Live distribution"
     {
         ## Update tlmgr
@@ -83,11 +82,8 @@ if [ -d "$CACHE_DIR/texlive" ]; then
     } | log-indent
 fi
 
-# ALWAYS
-if true; then
-    log-step "Store cache"
-    {
-        rm -rf "$CACHE_DIR/texlive"
-        cp -r "$BUILD_DIR/texlive" "$CACHE_DIR/texlive"
-    } | log-indent
-fi
+log-step "Store cache"
+{
+    rm -rf "$CACHE_DIR/$CACHE_KEY"
+    cp -r "$BUILD_DIR/texlive" "$CACHE_DIR/$CACHE_KEY"
+} | log-indent
