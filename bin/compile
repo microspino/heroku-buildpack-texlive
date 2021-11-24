@@ -9,7 +9,7 @@ BIN_DIR=$(dirname $(realpath -s $0))
 
 TEMP_DIR=$(mktemp -d)
 
-TEXLIVE_INSTALL_PREFIX=$BUILD_DIR/texlive
+export TEXLIVE_INSTALL_PREFIX=$BUILD_DIR/texlive
 TEXLIVE_PROFILE_PATH=$BIN_DIR/texlive.profile
 TEXLIVE_PACKAGES_PATH=$BIN_DIR/texlive.packages
 
@@ -46,7 +46,6 @@ if true; then
     ## Build binaries path
     BINARIES_PATH="$TEXLIVE_INSTALL_PREFIX/bin/$PLATFORM"
     ## Append binaries path to system paths
-    echo "$BINARIES_PATH" >> $GITHUB_PATH
     ### For current dyno
     PATH=$BINARIES_PATH:$PATH
     ### For future dynos
