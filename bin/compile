@@ -19,7 +19,8 @@ TEXLIVE_PACKAGES_PATH=$BIN_DIR/texlive.packages
 
 log-step "Restore cache"
 mkdir -p $CACHE_DIR
-CACHE_KEY=texlive
+CACHE_HASH=$(cat "$TEXLIVE_PROFILE_PATH" "$TEXLIVE_PACKAGES_PATH" | md5sum | cut -d ' ' -f 1)
+CACHE_KEY=texlive-$CACHE_HASH
 [[ -d "$CACHE_DIR/$CACHE_KEY" ]] && CACHE_HIT=1
 if [ $CACHE_HIT ]; then
     {
