@@ -3,7 +3,7 @@
 #=[ Schemes ]===================================================================
 # You can pick your scheme.  Availability depends upon the package repository,
 # but common ones are: infraonly, minimal, basic, small, medium and full.
-selected_scheme basic
+selected_scheme small
 
 #=[ Collections ]===============================================================
 # For finer control, select `scheme-custom` above and pick your collections.
