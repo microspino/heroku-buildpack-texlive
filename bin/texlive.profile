@@ -9,7 +9,6 @@ selected_scheme scheme-basic
 # For finer control, select `scheme-custom` above and pick your collections.
 # You can list them, one per line, as follows:
 #   collection-<COLLECTION_NAME> 1
-collection-graphics 1
 
 #=[ Paths ]=====================================================================
 # These paths are the defaults in portable mode, which the action enforces.
