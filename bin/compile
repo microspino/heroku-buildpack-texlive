@@ -74,13 +74,15 @@ fi
 
 if [ ! $CACHE_HIT ]; then
     log-step "Install TeX Live packages"
-    tlmgr install xcolor pdflscape
-    {
-        ## Read nonempty lines from packages file into an array
-        while IFS=\= read pkg; do TEXLIVE_PACKAGES+=($pkg); done < <(grep --invert-match '^(\s*#.*)?$' "$TEXLIVE_PACKAGES_PATH")
-        ## Use tlmgr to install the packages
-        tlmgr install "${TEXLIVE_PACKAGES[@]}"
-    } | log-indent
+    tlmgr install xcolor 
+    tlmgr install pdflscape
+    tlmgr install graphicx
+    #{
+    #    ## Read nonempty lines from packages file into an array
+    #    while IFS=\= read pkg; do TEXLIVE_PACKAGES+=($pkg); done < <(grep --invert-match '^(\s*#.*)?$' "$TEXLIVE_PACKAGES_PATH")
+    #    ## Use tlmgr to install the packages
+    #    tlmgr install "${TEXLIVE_PACKAGES[@]}"
+    # } | log-indent
 fi
 
 if [ $CACHE_HIT ]; then
