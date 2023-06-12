@@ -78,6 +78,7 @@ if [ ! $CACHE_HIT ]; then
         ## Read nonempty lines from packages file into an array
         while IFS=\= read pkg; do TEXLIVE_PACKAGES+=($pkg); done < <(grep --invert-match '^(\s*#.*)?$' "$TEXLIVE_PACKAGES_PATH")
         ## Use tlmgr to install the packages
+        log-step "Installing ${TEXLIVE_PACKAGES[@]}"
         tlmgr install "${TEXLIVE_PACKAGES[@]}"
     } | log-indent
 fi
