@@ -72,11 +72,11 @@ if true; then
     source $TEMP_DIR/texlive.sh
 fi
 
+echo "be sure to have the following packages..."
+tlmgr install xcolor pdflscape graphicx
+    
 if [ ! $CACHE_HIT ]; then
     log-step "Install TeX Live packages"
-    tlmgr install xcolor 
-    tlmgr install pdflscape
-    tlmgr install graphicx
     #{
     #    ## Read nonempty lines from packages file into an array
     #    while IFS=\= read pkg; do TEXLIVE_PACKAGES+=($pkg); done < <(grep --invert-match '^(\s*#.*)?$' "$TEXLIVE_PACKAGES_PATH")
