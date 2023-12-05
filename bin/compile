@@ -73,7 +73,7 @@ if true; then
 fi
 
 echo "be sure to have the following packages..."
-tlmgr install xcolor pdflscape babel-italian hyphen-italian
+tlmgr install xcolor pdflscape babel-italian hyphen-italian latex-extra
     
 if [ ! $CACHE_HIT ]; then
     log-step "Install TeX Live packages"
