@@ -73,7 +73,7 @@ if true; then
 fi
 
 echo "be sure to have the following packages..."
-tlmgr install xcolor pdflscape
+tlmgr install xcolor pdflscape babel-italian
     
 if [ ! $CACHE_HIT ]; then
     log-step "Install TeX Live packages"
